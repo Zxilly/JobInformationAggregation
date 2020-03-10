@@ -8,8 +8,9 @@ conv_login = login(conv) # 登录
 
 print("登录成功")
 
-backclazzdata(conv_login) # 抓取课程列表
+course_info_dict = backclazzdata(conv_login) # 抓取课程列表
 
+gettask(course_info_dict,conv_login)
 
 
 

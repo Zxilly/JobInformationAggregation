@@ -28,6 +28,7 @@ def login(conv):
     img = Image.open('tmp.png')
     img.show()
 
+    # todo: 更好的图片展示方式
     """
     code_pic_show = cv2.imread('tmp.png')
     cv2.imshow('NumCode', code_pic_show)
@@ -35,26 +36,32 @@ def login(conv):
     """
     while True:
         login_rec_json = conv.post("http://passport2.chaoxing.com/getauthstatus",
-                                   {'uuid': login_uuid, 'enc': login_enc},headers=headers)
+                                   {'uuid': login_uuid, 'enc': login_enc}, headers=headers)
         login_rec_dict = json.loads(login_rec_json.content)
         if login_rec_dict['status'] == True:
             # cv2.destroyAllWindows()
             break
-        print("run once")
-        print(login_rec_dict['status'])
+        # print("run once")
+        # print(login_rec_dict['status'])
         time.sleep(2)
     return conv
 
 
+
+
+
+
+
+"""
 def backclazzdata(conv):
     course_info_dict = []
     course_info_url = "http://mooc1-api.chaoxing.com/mycourse/backclazzdata?view=json&rss=1"
-    course_info = conv.get(course_info_url,headers=headers)
+    course_info = conv.get(course_info_url, headers=headers)
     cdata = json.loads(course_info.content)
     if (cdata['result'] != 1):
         print("课程列表获取失败")
         return 0
-    #print(cdata)
+    # print(cdata)
     for item in cdata['channelList']:
         if ("course" not in item['content']):
             continue
@@ -70,9 +77,16 @@ def backclazzdata(conv):
 
     print("获取成功")
     # print(course_info_dict)
+    return course_info_dict
 
 
-"""
+# todo: 拿课程信息，抓作业
+def gettask(course_info_dict, conv):
+    course_list_html_url = 'http://mooc1.jgsu.edu.cn/visit/courses?template=1&s=920e808ee51f050215d0e2b9b41dde26'
+    course_list_html = conv.get(course_list_html_url, headers)
+    
+
+
 def show_code_pic():
     print(code_url)
     codepic = conv.get(code_url)
