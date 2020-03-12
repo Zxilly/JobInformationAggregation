@@ -16,7 +16,7 @@ headers = {
 }
 
 
-def login(conv):
+def login(conv, server=False):
     code_html_url = 'https://passport2.chaoxing.com/cloudscanlogin?mobiletip=JIA%e6%8e%88%e6%9d%83%e8%af%b7%e6%b1%82' \
                     '&pcrefer=http://i.chaoxing.com '
     code_html = conv.get(code_html_url, headers=headers)
@@ -26,29 +26,31 @@ def login(conv):
     code_pic_url = code_html_obj.find(id='ewm')['src']
     # print(login_enc)
     # print(login_uuid)
-    code_pic = conv.get('https://passport2.chaoxing.com' + code_pic_url, headers=headers)
-    with open('tmp.png', 'wb') as f:
-        f.write(code_pic.content)
+    if not server:
+        code_pic = conv.get('https://passport2.chaoxing.com' + code_pic_url, headers=headers)
+        with open('tmp.png', 'wb') as f:
+            f.write(code_pic.content)
 
-    img = Image.open('tmp.png')
-    img.show()
+        img = Image.open('tmp.png')
+        img.show()
 
-    # todo: 更好的图片展示方式
-    """
-    code_pic_show = cv2.imread('tmp.png')
-    cv2.imshow('NumCode', code_pic_show)
-    cv2.waitKey(0)
-    """
-    while True:
-        login_rec_json = conv.post("https://passport2.chaoxing.com/getauthstatus",
-                                   {'uuid': login_uuid, 'enc': login_enc}, headers=headers)
-        login_rec_dict = json.loads(login_rec_json.content)
-        if login_rec_dict['status']:
-            # cv2.destroyAllWindows()
-            break
-        # print("run once")
-        # print(login_rec_dict['status'])
-        time.sleep(2)
+        # todo: 更好的图片展示方式
+        """
+        code_pic_show = cv2.imread('tmp.png')
+        cv2.imshow('NumCode', code_pic_show)
+        cv2.waitKey(0)
+        """
+        while True:
+            login_rec_json = conv.post("https://passport2.chaoxing.com/getauthstatus",
+                                       {'uuid': login_uuid, 'enc': login_enc}, headers=headers)
+            login_rec_dict = json.loads(login_rec_json.content)
+            if login_rec_dict['status']:
+                # cv2.destroyAllWindows()
+                break
+            # print("run once")
+            # print(login_rec_dict['status'])
+            time.sleep(2)
+
     return conv
 
 
@@ -97,7 +99,6 @@ def get_course_work(conv, course_list):
 
 def get_work_info(conv, info_list):
     # cid是课程id
-
 
     work_info_obj_list = []
 

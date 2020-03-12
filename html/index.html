@@ -5,6 +5,8 @@
     <title>Login - JobInformationAggregation</title>
     <link rel="stylesheet" href="css/mdui.min.css">
     <script src="js/mdui.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
 </head>
 <body class="mdui-theme-primary-indigo">
 <div class="mdui-appbar">
@@ -23,10 +25,12 @@
 
 </div>
 <script>
-    function jump() {
-        window.location.href="login.html"
-    };
-    setTimeout(jump,1500);
+    if ($.cookie('uuid') == null) {
+        window.location.href="login.html";
+    }
+    else{
+        window.location.href="user.html";
+    }
 </script>
 </body>
 </html>

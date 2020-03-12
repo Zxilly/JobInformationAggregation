@@ -14,23 +14,49 @@
         }
     </style>
     <script>
+        //var base_url = './ajax/';
+        var base_url = '//127.0.0.1:5000/'
         var $$ = mdui.JQ;
+
         function getuuid() { // 获取唯一值
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
         }
-        function initalize() {
-            $.cookie('uuid', getuuid(),{expires:3650,path:'/'});
-            $$.ajax({
-                method: 'POST',
 
+        function polling() {
+            $$.ajax({
+                method: 'GET',
+                url: base_url + 'loginstatus',
+                success: function (data) {
+                    if(data){
+                        window.location.href = 'user.html'
+                    }
+                }
             })
         }
-        if ($.cookie('uuid') == null) {
 
+        function initalize() {
+            $.cookie('uuid', getuuid(), {expires: 3650, path: '/'});
+            $$.ajax({
+                method: 'GET',
+                url: base_url + 'logincode',
+                success: function (data) {
+                    $$('#code').prop({
+                        src: 'data:image/png;base64,' + data,
+                    })//绘制二维码
+
+                    //轮询lgoinstatus
+                }
+            });
         }
+
+        $$(
+            function () {
+                initalize();
+            }
+        )
     </script>
 </head>
 <body class="mdui-theme-primary-indigo mdui-typo">
@@ -49,7 +75,7 @@
     </div>
     <div class="mdui-row">
         <div class="mdui-md-4 center">
-            <img id="code" src="">
+            <img id="code">
         </div>
     </div>
 
