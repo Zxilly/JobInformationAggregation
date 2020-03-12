@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - JobInformationAggregation</title>
+    <link rel="stylesheet" href="css/mdui.min.css">
+    <script src="js/mdui.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <style>
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <script>
+        var $$ = mdui.JQ;
+        function getuuid() { // 获取唯一值
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
+        }
+        function initalize() {
+            $.cookie('uuid', getuuid(),{expires:3650,path:'/'});
+            $$.ajax({
+                method: 'POST',
+
+            })
+        }
+        if ($.cookie('uuid') == null) {
+
+        }
+    </script>
+</head>
+<body class="mdui-theme-primary-indigo mdui-typo">
+<div class="mdui-appbar">
+    <div class="mdui-toolbar mdui-color-theme">
+        <i class="mdui-icon material-icons">group_work</i>
+        <a class="mdui-typo-headline">Login</a>
+        <div class="mdui-toolbar-spacer"></div>
+    </div>
+</div>
+<div class="mdui-container">
+    <div class="mdui-row">
+        <div class="mdui-col-md-4 center">
+            <div class="mdui-typo-headline" style="margin-top: 140px">请扫描二维码</div>
+        </div>
+    </div>
+    <div class="mdui-row">
+        <div class="mdui-md-4 center">
+            <img id="code" src="">
+        </div>
+    </div>
+
+
+</div>
+<script>
+
+</script>
+</body>
+</html>

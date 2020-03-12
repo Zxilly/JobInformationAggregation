@@ -18,9 +18,13 @@ course_work_list = get_course_work(conv_login, course_list)
 # 返回一个含有所有课程名称和作业url的列表
 
 all_work_info_tag_list = get_work_info(conv_login,course_work_list)
-# 返回一个含有所有待做作业信息的列表
+# 返回一个含有所有待做作业tag的列表
 
 all_work_info_dict_list = parse_work(all_work_info_tag_list)
+# 返回一个含有所有待做作业信息的列表
+
+print(all_work_info_dict_list)
+
 
 #work_info_list = get_work_info(conv_login, course_list)
 
