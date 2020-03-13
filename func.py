@@ -1,3 +1,4 @@
+import base64
 import json
 import time
 
@@ -16,7 +17,7 @@ headers = {
 }
 
 
-def login(conv, server=False):
+def login(conv, user_uuid, server=False):
     code_html_url = 'https://passport2.chaoxing.com/cloudscanlogin?mobiletip=JIA%e6%8e%88%e6%9d%83%e8%af%b7%e6%b1%82' \
                     '&pcrefer=http://i.chaoxing.com '
     code_html = conv.get(code_html_url, headers=headers)
@@ -50,8 +51,13 @@ def login(conv, server=False):
             # print("run once")
             # print(login_rec_dict['status'])
             time.sleep(2)
-
-    return conv
+        return conv
+    elif server:
+        code_pic = conv.get('https://passport2.chaoxing.com' + code_pic_url, headers=headers)
+        pic_content = code_pic.content
+        pic_base64 = base64.b64encode(pic_content)
+        polling_url = r"https://passport2.chaoxing.com/getauthstatus?uuid=" + login_uuid + r"&enc=" + login_enc
+        return pic_base64, conv, polling_url
 
 
 def get_course_list(conv):
@@ -145,11 +151,11 @@ def parse_work(work_list):
                 end_time = time_list[1].contents[1]
             except IndexError:
                 end_time = ''
-            print(start_time)
-            print(end_time)
-            print(work_name)
-            print(work_course_name)
-            print('\n\n')
+            # print(start_time)
+            # print(end_time)
+            # print(work_name)
+            # print(work_course_name)
+            # print('\n\n')
             work_info['workname'] = work_name
             work_info['coursename'] = work_course_name
             work_info['start'] = start_time

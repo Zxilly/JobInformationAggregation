@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>User - JobInformationAggregation</title>
+    <link href="css/mdui.min.css" rel="stylesheet">
+    <script src="js/mdui.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <style>
+        .left-set {
+            float: right;
+        !important;
+        }
+
+        .row_distant {
+            margin: 20px auto;
+        }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <script>
+        var base_url = './ajax/';
+        //var base_url = '//127.0.0.1:5000/';
+        var $$ = mdui.JQ;
+        $$(
+            $$.ajax({
+
+                method: 'GET',
+                url: base_url + 'userstatus',
+                success: function (data) {
+                    if (data === '1') {
+                        ajaxworkinfo();
+                    } else {
+                        window.location.href = 'login.html'
+                    }
+                },
+            })
+        );
+
+        function ajaxworkinfo() {
+            $$.ajax({
+                method: 'GET',
+                url: base_url + 'workinfo',
+                success: function (data) {
+                    $$('htmlcontent').append(data);
+                }
+            })
+        }
+    </script>
+</head>
+<body class="mdui-theme-primary-indigo">
+<div class="mdui-appbar">
+    <div class="mdui-toolbar mdui-color-theme">
+        <i class="mdui-icon material-icons">group_work</i>
+        <a class="mdui-typo-headline">Work</a>
+        <div class="mdui-toolbar-spacer"></div>
+    </div>
+</div>
+
+<div class="mdui-container">
+    <htmlcontent>
+
+    </htmlcontent>
+</div>
+</body>
+</html>
+
+
+<!--
+    <div class="mdui-row-md-3 top" >
+        <div class="mdui-col">
+            <div class="mdui-card">
+                <div class="mdui-card-media">
+                    <img src="img/card.jpg"/>
+                </div>
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">Title</div>
+                    <div class="mdui-card-primary-subtitle">Subtitle</div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col">
+            <div class="mdui-card">
+                <div class="mdui-card-media">
+                    <img src="img/card.jpg"/>
+                </div>
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">Title</div>
+                    <div class="mdui-card-primary-subtitle">Subtitle</div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col">
+            <div class="mdui-card">
+                <div class="mdui-card-media">
+                    <img src="img/card.jpg"/>
+                </div>
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">Title</div>
+                    <div class="mdui-card-primary-subtitle">Subtitle</div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->

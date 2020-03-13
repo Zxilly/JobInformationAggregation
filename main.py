@@ -4,7 +4,7 @@ from func import *
 
 conv = requests.session()
 
-conv_login = login(conv)  # 登录
+conv_login = login(conv=conv)  # 登录
 
 #print("登录成功")
 

@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Login - JobInformationAggregation</title>
-    <link rel="stylesheet" href="css/mdui.min.css">
+    <title>Welcome - JobInformationAggregation</title>
+    <link href="css/mdui.min.css" rel="stylesheet">
     <script src="js/mdui.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/jquery.cookie.js"></script>
@@ -26,10 +26,9 @@
 </div>
 <script>
     if ($.cookie('uuid') == null) {
-        window.location.href="login.html";
-    }
-    else{
-        window.location.href="user.html";
+        window.location.href = "login.html";
+    } else {
+        window.location.href = "user.html";
     }
 </script>
 </body>

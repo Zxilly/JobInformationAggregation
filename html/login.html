@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - JobInformationAggregation</title>
-    <link rel="stylesheet" href="css/mdui.min.css">
+    <link href="css/mdui.min.css" rel="stylesheet">
     <script src="js/mdui.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/jquery.cookie.js"></script>
@@ -14,8 +14,8 @@
         }
     </style>
     <script>
-        //var base_url = './ajax/';
-        var base_url = '//127.0.0.1:5000/'
+        var base_url = './ajax/';
+        //var base_url = '//127.0.0.1:5000/'
         var $$ = mdui.JQ;
 
         function getuuid() { // 获取唯一值
@@ -30,7 +30,7 @@
                 method: 'GET',
                 url: base_url + 'loginstatus',
                 success: function (data) {
-                    if(data){
+                    if (data) {
                         window.location.href = 'user.html'
                     }
                 }
@@ -46,10 +46,23 @@
                     $$('#code').prop({
                         src: 'data:image/png;base64,' + data,
                     })//绘制二维码
-
-                    //轮询lgoinstatus
                 }
             });
+            //轮询lgoinstatus
+            var timer = setInterval(polling, 3000);
+
+            function polling() {
+                $$.ajax({
+                    method: 'GET',
+                    url: base_url + 'loginstatus',
+                    success: function (data) {
+                        if (data === '1') {
+                            clearInterval(timer);
+                            window.location.href = 'user.html'
+                        }
+                    }
+                })
+            }
         }
 
         $$(
@@ -69,8 +82,8 @@
 </div>
 <div class="mdui-container">
     <div class="mdui-row">
-        <div class="mdui-col-md-4 center">
-            <div class="mdui-typo-headline" style="margin-top: 140px">请扫描二维码</div>
+        <div class="mdui-col-md-4 mdui-col-offset-md-4">
+            <div class="mdui-typo-headline center" style="margin-top: 140px">请扫描二维码</div>
         </div>
     </div>
     <div class="mdui-row">
