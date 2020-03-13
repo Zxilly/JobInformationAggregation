@@ -1,3 +1,8 @@
+with open('a.dat','w+') as f:
+    f.write('aaa')
+
+
+"""
 from bs4 import  BeautifulSoup
 import lxml
 html_doc = '<head></head><span class="pt5" title=""><span class="fl">开始时间：</span></span>'
@@ -16,4 +21,4 @@ print(test)
 
 # string_test = "                                  aaa                                      "
 # print(string_test.strip())
-
+"""

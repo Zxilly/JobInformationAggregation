@@ -12,7 +12,7 @@ headers = {
 }
 
 
-@server.route('/logincode')
+@server.route('/ajax/logincode')
 def logincode():
     main_session = requests.session()
     uuid = request.cookies.get('uuid')
@@ -28,7 +28,7 @@ def logincode():
     return res
 
 
-@server.route('/loginstatus')
+@server.route('/ajax/loginstatus')
 def loginstatus():
     main_session = requests.session()
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
@@ -50,13 +50,13 @@ def loginstatus():
         return '0'
 
 
-@server.route('/userstatus')  # 判断session是否过期
+@server.route('/ajax/userstatus')  # 判断session是否过期
 def userstatus():
     main_session = requests.session()
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
     # uuid = 'e3984b0c-e468-43aa-9b5e-a368c1911e89'
     file_path = str('data/' + str(uuid) + '.dat')
-    with open(file_path, 'r+')as f:
+    with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     session_time = user_dat['time']
     if ((time.time() - session_time) > 2160000):
@@ -66,13 +66,13 @@ def userstatus():
         return '1'  # session有效
 
 
-@server.route('/workinfo')
+@server.route('/ajax/workinfo')
 def workinfo():
     main_session = requests.session()
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
     # uuid = 'e3984b0c-e468-43aa-9b5e-a368c1911e89'
     file_path = str('data/' + str(uuid) + '.dat')
-    with open(file_path, 'r+')as f:
+    with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     main_session.cookies.update(user_dat['session'])
 
