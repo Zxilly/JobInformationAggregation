@@ -34,7 +34,7 @@ def loginstatus():
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
     # uuid = 'e3984b0c-e468-43aa-9b5e-a368c1911e89'
     file_path = str('data/' + str(uuid) + '.dat')
-    with open(file_path, 'r+')as f:
+    with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     main_session.cookies.update(user_dat['session'])
     login_rec_json = main_session.post(str(user_dat['polling']), headers=headers)
@@ -52,7 +52,7 @@ def loginstatus():
 
 @server.route('/ajax/userstatus')  # 判断session是否过期
 def userstatus():
-    main_session = requests.session()
+
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
     # uuid = 'e3984b0c-e468-43aa-9b5e-a368c1911e89'
     file_path = str('data/' + str(uuid) + '.dat')
