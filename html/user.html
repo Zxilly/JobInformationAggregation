@@ -21,10 +21,69 @@
             margin: 0 auto;
             text-align: center;
         }
+
+        .loadingBox {
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999;
+        }
+
+        .loadingBox .loadingIcon {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loadingBox .loadingIcon t{
+            height: 64px;
+            width: 64px;
+            background: url(img/loading.png) center center no-repeat;
+            background-size: 100% 100%;
+            animation: rotateBox 2s linear infinite;
+        }
+
+        .loadingBox .loadingMain {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            cursor: not-allowed;
+        }
+
+        .loadingBox z{
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @keyframes rotateBox {
+
+        0  {
+            transform: rotate(0deg)
+        ;
+        }
+        50%  {
+            transform: rotate(180deg)
+        ;
+        }
+        100%  {
+            transform: rotate(360deg)
+        ;
+        }
+        }
+        .loadingBox[data-show="0"] {
+            display: none;
+        }
     </style>
     <script>
         var base_url = './ajax/';
-        //var base_url = '//127.0.0.1:5000/';
+        //var base_url = 'https://work.learningman.top/ajax/';
         var $$ = mdui.JQ;
         $$(
             $$.ajax({
@@ -46,6 +105,7 @@
                 method: 'GET',
                 url: base_url + 'workinfo',
                 success: function (data) {
+                    $$('.loadingBox').attr('data-show', 0);
                     $$('htmlcontent').append(data);
                 }
             })
@@ -63,7 +123,15 @@
 
 <div class="mdui-container">
     <htmlcontent>
-
+        <div class="loadingBox" data-show="1">
+            <div class="loadingMain">
+                <div class="loadingCenter">
+                    <div class="loadingIcon">
+                        <t></t>
+                    </div>
+                </div>
+            </div>
+        </div>
     </htmlcontent>
 </div>
 </body>
