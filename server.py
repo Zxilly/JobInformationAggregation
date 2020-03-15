@@ -124,4 +124,4 @@ def workinfo():
 
 
 if __name__ == '__main__':
-    server.run(debug=True)
+    server.run(debug=False)
