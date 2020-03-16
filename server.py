@@ -37,6 +37,7 @@ def loginstatus():
     with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     main_session.cookies.update(user_dat['session'])
+    main_session.keep_alive = False
     login_rec_json = main_session.post(str(user_dat['polling']), headers=headers)
     login_rec_dict = json.loads(login_rec_json.content)
     if login_rec_dict['status']:
@@ -75,6 +76,8 @@ def workinfo():
     with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     main_session.cookies.update(user_dat['session'])
+
+    main_session.keep_alive = False
 
     course_list = get_course_list(main_session)
 

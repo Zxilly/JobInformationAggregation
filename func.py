@@ -20,6 +20,7 @@ headers = {
 def login(conv, user_uuid, server=False):
     code_html_url = 'https://passport2.chaoxing.com/cloudscanlogin?mobiletip=JIA%e6%8e%88%e6%9d%83%e8%af%b7%e6%b1%82' \
                     '&pcrefer=http://i.chaoxing.com '
+    conv.keep_alive = False
     code_html = conv.get(code_html_url, headers=headers)
     code_html_obj = BeautifulSoup(code_html.content, "lxml")
     login_uuid = code_html_obj.find(id='uuid')['value']
@@ -65,6 +66,8 @@ def get_course_list(conv):
     course_list_host_url = 'https://mooc1-1.chaoxing.com'
     course_list_url = 'https://mooc1-1.chaoxing.com/visit/courses'
 
+    conv.keep_alive = False
+
     course_list_html = conv.get(course_list_url, headers=headers)
     html_obj = BeautifulSoup(course_list_html.content.decode('utf-8'), "lxml")
     course_list_all_tag = html_obj.find_all("h3", class_='clearfix')
@@ -82,6 +85,7 @@ def get_course_list(conv):
 def get_course_work(conv, course_list):
     host_url = 'https://mooc1-1.chaoxing.com'
     work_list = []
+    conv.keep_alive = False
     for course in course_list:
         course_name = course[0]  # 课程名称
         html_content = conv.get(course[1], headers=headers)  # 获取页面内容，response对象
@@ -108,6 +112,8 @@ def get_work_info(conv, info_list):
 
     work_info_obj_list = []
 
+    conv.keep_alive = False
+    
     def is_li_but_has_no_class(tag):
         return tag.name == 'li' and not tag.has_attr('class')
 
