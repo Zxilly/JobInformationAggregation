@@ -17,7 +17,7 @@ headers = {
 }
 
 
-def login(conv, user_uuid, server=False):
+def login(conv, user_uuid=0, server=False):
     code_html_url = 'https://passport2.chaoxing.com/cloudscanlogin?mobiletip=JIA%e6%8e%88%e6%9d%83%e8%af%b7%e6%b1%82' \
                     '&pcrefer=http://i.chaoxing.com '
     conv.keep_alive = False
@@ -113,7 +113,7 @@ def get_work_info(conv, info_list):
     work_info_obj_list = []
 
     conv.keep_alive = False
-    
+
     def is_li_but_has_no_class(tag):
         return tag.name == 'li' and not tag.has_attr('class')
 

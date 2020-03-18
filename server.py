@@ -1,6 +1,7 @@
 import requests
 from flask import Flask, make_response, request
 
+import mobile_func
 from func import *
 
 server = Flask('server')
@@ -53,7 +54,6 @@ def loginstatus():
 
 @server.route('/ajax/userstatus')  # 判断session是否过期
 def userstatus():
-
     uuid = request.cookies.get('uuid')  # TODO:production记得换回来
     # uuid = 'e3984b0c-e468-43aa-9b5e-a368c1911e89'
     file_path = str('data/' + str(uuid) + '.dat')
@@ -76,9 +76,8 @@ def workinfo():
     with open(file_path, 'r+') as f:
         user_dat = json.loads(f.read())
     main_session.cookies.update(user_dat['session'])
-
     main_session.keep_alive = False
-
+    """
     course_list = get_course_list(main_session)
 
     course_work_list = get_course_work(main_session, course_list)
@@ -88,40 +87,15 @@ def workinfo():
     all_work_info_dict_list = parse_work(all_work_info_tag_list)
 
     print(all_work_info_dict_list)
-
-    template = """
-<div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-4 row_distant">
-    <div class="mdui-card mdui-typo">
-        <div class="mdui-card-media">
-            <img src="img/card.jpg"/>
-            <div class="mdui-card-media-covered">
-                <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">{}</div>
-                    <div class="mdui-card-primary-subtitle">{}</div>
-                </div>
-            </div>
-        </div>
-        <div class="mdui-card-content">
-            <div class="mdui-chip">
-                <span class="mdui-chip-title"><strong>开始时间:</strong></span>
-            </div>
-            <div class="mdui-chip left-set">
-                <span class="mdui-chip-title">{}</span>
-            </div>
-            <br>
-            <div class="mdui-chip">
-                <span class="mdui-chip-title"><strong>截止时间:</strong></span>
-            </div>
-            <div class="mdui-chip left-set">
-                <span class="mdui-chip-title">{}</span>
-            </div>
-        </div>
-    </div>
-</div>
     """
+
+    course_info = mobile_func.get_course(main_session)
+    all_work_info_dict_list = mobile_func.get_work(main_session, course_info)
+
+    template = r'<div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-4 row_distant"><div class="mdui-card mdui-typo"><div class="mdui-card-media"><img src="img/card.jpg"/><div class="mdui-card-media-covered"><div class="mdui-card-primary"><div class="mdui-card-primary-title">{}</div><div class="mdui-card-primary-subtitle">{}</div></div></div></div><div class="mdui-card-content"><div class="mdui-chip"><span class="mdui-chip-icon"><i class="mdui-icon material-icons">timelapse</i></span><span class="mdui-chip-title">{}</span></div><div class="mdui-float-right"><a class="mdui-btn mdui-ripple" href="{}" target="_blank">做作业</a></div></div></div></div>'
     return_content = ''
     for one in all_work_info_dict_list:
-        render_one = template.format(one['workname'], one['coursename'], one['start'], one['end'])
+        render_one = template.format(one['work_name'], one['course_name'], one['left_time'], one['work_url'])
         return_content += render_one
     return make_response(return_content)
 

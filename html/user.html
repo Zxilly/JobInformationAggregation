@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>User - JobInformationAggregation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
     <link href="css/mdui.min.css" rel="stylesheet">
     <script src="js/mdui.min.js"></script>
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -39,7 +40,7 @@
             justify-content: center;
         }
 
-        .loadingBox .loadingIcon t{
+        .loadingBox .loadingIcon t {
             height: 64px;
             width: 64px;
             background: url(img/loading.png) center center no-repeat;
@@ -56,7 +57,7 @@
             cursor: not-allowed;
         }
 
-        .loadingBox z{
+        .loadingBox z {
             color: #fff;
             font-size: 14px;
             text-align: center;
@@ -64,15 +65,20 @@
 
         @keyframes rotateBox {
 
-        0  {
+        0
+        {
             transform: rotate(0deg)
         ;
         }
-        50%  {
+        50
+        %
+        {
             transform: rotate(180deg)
         ;
         }
-        100%  {
+        100
+        %
+        {
             transform: rotate(360deg)
         ;
         }
@@ -118,60 +124,22 @@
         <i class="mdui-icon material-icons">group_work</i>
         <a class="mdui-typo-headline">Work</a>
         <div class="mdui-toolbar-spacer"></div>
+        <a class="mdui-icon material-icons" href="https://learningman.top" target="_blank">gesture</a>
     </div>
 </div>
 
 <div class="mdui-container">
     <htmlcontent>
-        <div class="loadingBox" data-show="1">
-            <div class="loadingMain">
-                <div class="loadingCenter">
-                    <div class="loadingIcon">
-                        <t></t>
-                    </div>
-                </div>
-            </div>
-        </div>
     </htmlcontent>
-</div>
-</body>
-</html>
-
-
-<!--
-    <div class="mdui-row-md-3 top" >
-        <div class="mdui-col">
-            <div class="mdui-card">
-                <div class="mdui-card-media">
-                    <img src="img/card.jpg"/>
-                </div>
-                <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">Title</div>
-                    <div class="mdui-card-primary-subtitle">Subtitle</div>
-                </div>
-            </div>
-        </div>
-        <div class="mdui-col">
-            <div class="mdui-card">
-                <div class="mdui-card-media">
-                    <img src="img/card.jpg"/>
-                </div>
-                <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">Title</div>
-                    <div class="mdui-card-primary-subtitle">Subtitle</div>
-                </div>
-            </div>
-        </div>
-        <div class="mdui-col">
-            <div class="mdui-card">
-                <div class="mdui-card-media">
-                    <img src="img/card.jpg"/>
-                </div>
-                <div class="mdui-card-primary">
-                    <div class="mdui-card-primary-title">Title</div>
-                    <div class="mdui-card-primary-subtitle">Subtitle</div>
+    <div class="loadingBox" data-show="0">
+        <div class="loadingMain">
+            <div class="loadingCenter">
+                <div class="loadingIcon">
+                    <t></t>
                 </div>
             </div>
         </div>
     </div>
--->
+</div>
+</body>
+</html>
