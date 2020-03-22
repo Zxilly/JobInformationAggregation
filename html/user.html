@@ -113,6 +113,10 @@
                 success: function (data) {
                     $$('.loadingBox').attr('data-show', 0);
                     $$('htmlcontent').append(data);
+                },
+                error:function () {
+                    mdui.snackbar('请求失败，尝试重新验证');
+                    window.location.href = 'login.html';
                 }
             })
         }
