@@ -49,7 +49,7 @@ def get_work(conv, course_info):
                 try:
                     left_time = str(one_task.find('span',class_='fr').string)
                 except AttributeError:
-                    left_time = '剩余365天'
+                    left_time = '不限时'
                 course_name = str(one_course['course_name'])
                 work_url = unquote(str(one_task['data']))
                 work_info.append({'work_name':work_name,'course_name':course_name,'left_time':left_time,'work_url':work_url})
