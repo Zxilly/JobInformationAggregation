@@ -97,6 +97,8 @@ def workinfo():
     for one in all_work_info_dict_list:
         render_one = template.format(one['work_name'], one['course_name'], one['left_time'], one['work_url'])
         return_content += render_one
+    if len(return_content)==0:
+        return_content += r'<div class="mdui-typo-display-4-opacity mdui-center mdui-text-center nowork">无作业</div>'
     return make_response(return_content)
 
 
