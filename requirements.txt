@@ -1,5 +1,0 @@
-flask
-beautifulsoup4
-requests
-pillow
-lxml
