@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Valid(BaseModel):
+class loginValid(BaseModel):
     enc: str
     uuid: str
     session: dict

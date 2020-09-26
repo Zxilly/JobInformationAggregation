@@ -51,28 +51,63 @@ def checkLoginAuth(valid):
             'enc': valid.enc,
             'uuid': valid.uuid
         }).json()['status']
-    return status
+        if status:
+            return True, s.cookies.get_dict()
+        else:
+            return False, None
 
 
-def verifyCookie(valid):
+def verify(session: dict):
+    verifyURL = "https://mooc2-ans.chaoxing.com/visit/interaction"
     with requests.session() as s:
-        s.cookies.update(valid.session)
-        redirect = s.get("https://mooc2-ans.chaoxing.com/visit/interaction",allow_redirects=False).is_redirect
-    return not redirect
-
-def getInfo(valid):
+        s.cookies.update(session)
+        redirect = not s.get("https://mooc2-ans.chaoxing.com/visit/interaction", allow_redirects=False).is_redirect
+    return redirect
 
 
+def getWorkInfo(session: dict):
+    allWorkInfo = []
 
-# def checkLoginAuth(enc,uuid,sessionDict):
-#     pickleObject = load(userID)
-#     session = pickleObject['session']
-#     auth = pickleObject['auth']
-#     status = auth.loginAuth(session)
-#     if status and auth in pickleObject.keys:
-#         del pickleObject['auth']
-#     save(userID,pickleObject)
-#     return status
+    s = requests.session()
+    s.cookies.update(session)
+    s.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                    'Chrome/85.0.4183.121 Safari/537.36 Edg/85.0.564.63'})
 
-def checkValid(userID):
-    pass
+    courseListURL = 'https://mooc2-ans.chaoxing.com/visit/courses/list?rss=1&start=0&size=500&catalogId=0&searchname='
+
+    html = s.get(url=courseListURL).content.decode()
+    htmlBS = BeautifulSoup(html, 'lxml')
+    # print(htmlBS.find_all(class_='course-info'))
+    for singleCourse in htmlBS.find_all(class_='course-info'):
+        courseURL = 'https://mooc2-ans.chaoxing.com' + str(singleCourse.find('a')['href'])
+        courseName = str(singleCourse.find('span').string)
+        teacherName = str(singleCourse.find('p').string)
+        # print(courseURL,courseName,teacherName)
+
+        courseHTML = s.get(url=courseURL).content.decode()
+        courseHTMLBS = BeautifulSoup(courseHTML, 'lxml')
+
+        courseWorkURL = str(courseHTMLBS.find('li', dataname="zy-stu").a['data-url']) + '&status=1'
+
+        # print(courseWorkURL)
+
+        courseWorkHTML = s.get(courseWorkURL).content.decode()
+        courseWorkHTMLBS = BeautifulSoup(courseWorkHTML, 'lxml')
+
+        for oneWork in courseWorkHTMLBS.find_all('li'):
+            if oneWork.find('div', class_='icon-zy-g'):
+                continue
+            workName = oneWork.find(class_='fl').string
+            workURL = oneWork['data']
+            workTime = str(oneWork.find(class_='time').contents[-1]).replace('\r\n', '').strip()
+            singleWorkInfo = {
+                'courseName': courseName,
+                'teacherName': teacherName,
+                'workName': workName,
+                'workTime': workTime,
+                'workURL': workURL
+            }
+            # print(singleWorkInfo)
+            allWorkInfo.append(singleWorkInfo.copy())
+
+    return allWorkInfo

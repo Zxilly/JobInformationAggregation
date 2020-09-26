@@ -11,34 +11,41 @@ app = FastAPI()
 async def errorHandler():
     return ['Nothing Here']
 
+@app.get('/checkRunning')
+async def checkRunning():
+    return True
 
 @app.get('/login/code')
 async def loginCode():
     picBase64, enc, uuid, session = getLoginCode()
-    valid = Valid(enc=enc, uuid=uuid, session=session)
+    valid = loginValid(enc=enc, uuid=uuid, session=session)
 
     return {'pic': picBase64, 'valid': valid}
 
 
-@app.get('/login/auth')
+@app.post('/login/auth')
 async def auth(
-        valid: Valid = Body(..., embed=True)
+        valid: loginValid = Body(..., embed=True)
 ):
-    return checkLoginAuth(valid)
+    status,session = checkLoginAuth(valid)
+    return {
+        'status':status,
+        'session':session
+    }
 
 
-@app.get('/verifyCookie')
-async def verifyCookie(
-        valid: Valid = Body(..., embed=True)
+@app.post('/login/verifyCookies')
+async def verifyCookies(
+        session: dict = Body(..., embed=True)
 ):
-    return verifyCookie(valid)
+    return verify(session)
 
 
-@app.get('/info')
+@app.post('/info')
 async def info(
-        valid: Valid = Body(..., embed=True)
+        session: dict = Body(..., embed=True)
 ):
-    ...
+    return {'workInfo':getWorkInfo(session)}
 
 
 if __name__ == '__main__':
