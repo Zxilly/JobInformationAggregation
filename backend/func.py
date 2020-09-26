@@ -51,4 +51,10 @@ def checkLoginAuth(userID):
     pickleObject = load(userID)
     session = pickleObject['session']
     auth = pickleObject['auth']
-    return auth.loginAuth(session)
+    status = auth.loginAuth(session)
+    if status and auth in pickleObject.keys:
+        del pickleObject['auth']
+    save(userID,pickleObject)
+    return status
+
+def checkValid(userID):

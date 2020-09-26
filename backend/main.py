@@ -29,8 +29,7 @@ async def auth(
 async def info(
         userID:str = Query(...),
 ):
-
-
+    ...
 
 if __name__ == '__main__':
     uvicorn.run(app='main:app', debug=True)
