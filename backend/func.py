@@ -19,6 +19,11 @@ def load(filename):
         return pickle.load(f)
 
 
+def checkXXTConnect():
+    req = requests.get(loginURL,headers=ua)
+    return req.ok
+
+
 def getLoginSession():
     session = requests.session()
     session.headers.update(ua)
@@ -47,6 +52,7 @@ def checkLoginAuth(valid):
     authURL = 'https://passport2.chaoxing.com/getauthstatus'
     with requests.session() as s:
         s.cookies.update(valid.session)
+        s.headers.update(ua)
         status = s.post(url=authURL, data={
             'enc': valid.enc,
             'uuid': valid.uuid
@@ -61,6 +67,7 @@ def verify(session: dict):
     verifyURL = "https://mooc2-ans.chaoxing.com/visit/interaction"
     with requests.session() as s:
         s.cookies.update(session)
+        s.headers.update(ua)
         redirect = not s.get("https://mooc2-ans.chaoxing.com/visit/interaction", allow_redirects=False).is_redirect
     return redirect
 
@@ -70,8 +77,7 @@ def getWorkInfo(session: dict):
 
     s = requests.session()
     s.cookies.update(session)
-    s.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                    'Chrome/85.0.4183.121 Safari/537.36 Edg/85.0.564.63'})
+    s.headers.update(ua)
 
     courseListURL = 'https://mooc2-ans.chaoxing.com/visit/courses/list?rss=1&start=0&size=500&catalogId=0&searchname='
 
@@ -110,4 +116,5 @@ def getWorkInfo(session: dict):
             # print(singleWorkInfo)
             allWorkInfo.append(singleWorkInfo.copy())
 
+    s.close()
     return allWorkInfo

@@ -1,19 +1,34 @@
 import uvicorn
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 
 from clazz import *
 from func import *
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 async def errorHandler():
     return ['Nothing Here']
 
+
 @app.get('/checkRunning')
 async def checkRunning():
     return True
+
+
+@app.get('/checkXXTConnect')
+async def checkXXT():
+    return checkXXTConnect()
+
 
 @app.get('/login/code')
 async def loginCode():
@@ -27,10 +42,10 @@ async def loginCode():
 async def auth(
         valid: loginValid = Body(..., embed=True)
 ):
-    status,session = checkLoginAuth(valid)
+    status, session = checkLoginAuth(valid)
     return {
-        'status':status,
-        'session':session
+        'status': status,
+        'session': session
     }
 
 
@@ -45,7 +60,7 @@ async def verifyCookies(
 async def info(
         session: dict = Body(..., embed=True)
 ):
-    return {'workInfo':getWorkInfo(session)}
+    return {'workInfo': getWorkInfo(session)}
 
 
 if __name__ == '__main__':
