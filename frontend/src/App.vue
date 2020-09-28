@@ -15,10 +15,9 @@
     <v-main>
       <v-container>
         <v-row
-            class="mt-12"
-            justify="space-around"
+            class="mt-6"
+            justify="start"
         >
-          <v-fade-transition mode="out-in">
             <template v-if="error">
               <v-col
                   cols="12"
@@ -40,7 +39,8 @@
               <v-col
                   cols="12"
                   md="6"
-                  lg="4"
+                  lg="3"
+                  class="mx-auto"
                   align-self="center"
               >
                 <v-card
@@ -49,23 +49,10 @@
                 >
                   <v-row justify="center" align="center" class="pa-4 flex-column">
                     <v-img
-                        :lazy-src="require('@/assets/placeholder.png')"
                         :src="qrcodeURL"
                         max-width="50%"
                         class="pa-8 rounded"
                     >
-                      <template v-slot:placeholder>
-                        <v-row
-                            class="fill-height ma-0"
-                            align="center"
-                            justify="center"
-                        >
-                          <v-progress-circular
-                              indeterminate
-                              color="grey lighten-5"
-                          ></v-progress-circular>
-                        </v-row>
-                      </template>
                     </v-img>
                     <v-card-subtitle
                         class="heading qrcode-title"
@@ -76,34 +63,38 @@
                 </v-card>
               </v-col>
             </template>
-            <template v-else-if="haveSession&&!haveData">
-              <v-col
-                  cols="12"
-                  md="4"
-                  lg="3"
-                  v-for="(i) in 4"
-                  :key="i"
-              >
-                <v-skeleton-loader
-                    type="card"
-                ></v-skeleton-loader>
-              </v-col>
+            <template v-else-if="!haveData">
+                <v-col
+                    cols="12"
+                    md="6"
+                    lg="4"
+                    v-for="(i) in 3"
+                    :key="i"
+                >
+                  <v-skeleton-loader
+                      type="card"
+                  ></v-skeleton-loader>
+                </v-col>
             </template>
             <template v-else>
               <v-col
                   cols="12"
-                  md="4"
-                  lg="'3"
+                  md="6"
+                  lg="4"
+                  class="pb-4"
+                  v-for="(oneWorkData,i) in workData"
+                  :key="i"
               >
                 <v-card>
                   <v-img
-                      src="https://picsum.photos/600/200"
+                      :src="'https://picsum.photos/seed/'+(oneWorkData['workName'])+'/600/200'"
+                      :lazy-src="require('@/assets/600x200.png')"
                       contain
                   />
                   <v-card-title
                       class="headline"
                   >
-                    Top western road trips
+                    {{oneWorkData['workName']}}
                   </v-card-title>
 
                   <v-card-subtitle
@@ -112,20 +103,30 @@
                 <span
                     class="course-name"
                 >
-                  课程名
+                  {{ oneWorkData['courseName'] }}
                 </span>
                     <span class="by-name d-inline-block">&emsp;</span>
                     <span
                         class="font-weight-light grey--text teacher-name"
                     >
-                  教师名asddddddddddddddddddddddddddddddddddddddd
+                  {{oneWorkData['teacherName']}}
                 </span>
                   </v-card-subtitle>
+                  <v-divider/>
                   <v-card-actions>
+                    <v-chip
+                        class="ml-2"
+                    >
+                      <v-icon>mdi-alarm</v-icon>&nbsp;
+                      {{oneWorkData['workTime']}}
+                    </v-chip>
                     <v-spacer/>
                     <v-btn
                         text
                         color="orange lighten-2"
+                        style="font-size: 1rem"
+                        class="mr-2"
+                        @click="goWork(oneWorkData['workURL'])"
                     >
                       DO IT!
                     </v-btn>
@@ -133,7 +134,6 @@
                 </v-card>
               </v-col>
             </template>
-          </v-fade-transition>
         </v-row>
       </v-container>
     </v-main>
@@ -183,57 +183,21 @@ export default {
       snackbarColor: '',
       enc: '',
       uuid: '',
-      session: {}
+      session: {},
+      tryTime:0,
     }
   },
   mounted() {
-    if (!this.checkRunning()) {
-      this.error = true
-      this.errorMsg = '后端在启动中，请10秒后再试。'
-      return 0
-    } else {
-      if (!this.checkServerXXTConnect()) {
-        this.error = true
-        this.errorMsg = '后端服务器无法连接学习通，请联系管理员'
-        return 0
-      }
-    }
-    this.haveSession = this.checkSession()
-    if (this.haveSession) {
-      this.getWorkData()
-    } else {
-      this.getLoginData()
-      let trytime2 = 0
-      while (trytime2 < 50) {
-        if (trytime2 === 40) {
-          this.getLoginData()
-        }
-        let url = this.$apiurl + '/login/auth'
-        axios.post(url, {
-          'valid': {
-            'enc': this.enc,
-            'uuid': this.uuid,
-            'session': this.session
-          }
-        }).then((resp) => {
-          if (!resp.data['status']) {
-            this.sleep(3000).then(() => {
-              trytime2++
-            })
-          } else {
-            ls.setItem('session', JSON.stringify(resp.data['session']))
-            this.showSnackbar(['登陆成功', 'success'])
-            trytime2 = 100
-          }
-        })
-      }
-      this.getWorkData()
-    }
+    this.checkRunning()
   },
   methods: {
     sleep: function (time) {
       return new Promise((resolve) => setTimeout(resolve, time))
     },
+    goWork: function (url) {
+      window.open(url,'_blank')
+    }
+    ,
     showSnackbar: function (arg) {
       this.snackbarMessage = arg[0]
       this.snackbarColor = arg[1]
@@ -243,27 +207,71 @@ export default {
       return {'session': JSON.parse(ls.getItem('session'))}
     },
     checkSession: function () {
-      if (ls.length === 0) {
-        return false
+      let that=this
+      if (ls.getItem('jia')===null) {
+        that.getLoginData()
       } else {
         let url = this.$apiurl + '/login/verifyCookies'
         axios.post(url, this.getSession()).then(function (resp) {
-          return resp
+          if(resp.data){
+            that.haveSession = true
+            that.getWorkData()
+          } else {
+            that.getLoginData()
+          }
         })
       }
     },
+    checkAuth: function () {
+      let url = this.$apiurl + '/login/auth'
+      let that = this
+      axios.post(url, {
+        'valid': {
+          'enc': this.enc,
+          'uuid': this.uuid,
+          'session': this.session
+        }
+      }).then(function (resp) {
+        if(!resp.data['status']){
+          that.sleep(2000).then(()=>{
+            that.tryTime++
+            if(that.tryTime>40){
+              that.getLoginData()
+            } else {
+              that.sleep(2000).then(()=>{
+                that.checkAuth()
+              })
+            }
+          })
+        } else {
+          ls.setItem('session', JSON.stringify(resp.data['session']))
+          ls.setItem('jia','1')
+          that.showSnackbar(['登陆成功', 'success'])
+          that.haveSession = true
+          that.getWorkData()
+        }
+      })
+    },
     checkRunning: function () {
+      let that = this
       let url = this.$apiurl + '/checkRunning'
-      axios.get(url, {timeout: 3000}).then(function () {
-        return true
+      axios.get(url, {timeout: 2000}).then(function () {
+        that.checkServerXXTConnect()
       }).catch(function () {
-        return false
+        that.error = true
+        that.errorMsg = '后端在启动中，请10秒后再试。'
       })
     },
     checkServerXXTConnect: function () {
+      let that = this
       let url = this.$apiurl + '/checkXXTConnect'
       axios.get(url).then(function (resp) {
-        return resp.data;
+        if(!resp.data){
+          that.error = true
+          that.errorMsg = '后端服务器无法连接学习通，请联系管理员'
+        } else {
+          that.checkSession()
+        }
       })
     },
     getWorkData: function () {
@@ -283,6 +291,7 @@ export default {
         that.enc = resp.data['valid']['enc']
         that.uuid = resp.data['valid']['uuid']
         that.session = resp.data['valid']['session']
+        that.checkAuth()
       })
     }
   }

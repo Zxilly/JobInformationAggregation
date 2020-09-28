@@ -28,6 +28,7 @@ async def checkRunning():
 @app.get('/checkXXTConnect')
 async def checkXXT():
     return checkXXTConnect()
+    # return False
 
 
 @app.get('/login/code')
