@@ -1,0 +1,29 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  backend:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'fastapi'
+    backend:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: main.app
+        Runtime: custom
+        CodeUri: './'
+      Events:
+        httpTrigger:
+          Type: HTTP
+          Properties:
+            AuthType: ANONYMOUS
+            Methods: ['POST', 'GET']
+    my_domain:
+      Type: 'Aliyun::Serverless::CustomDomain'
+      Properties:
+        DomainName: Auto
+        Protocol: HTTP
+        RouteConfig:
+          Routes:
+            '/*':
+              ServiceName: backend
+              FunctionName: backend
