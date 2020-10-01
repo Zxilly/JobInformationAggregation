@@ -1,0 +1,11 @@
+RUNTIME custom
+RUN mkdir -p ~/.pip
+RUN echo "[global]" >> ~/.pip/pip.conf
+RUN echo "index-url = http://mirrors.aliyun.com/pypi/simple" >> ~/.pip/pip.conf
+RUN echo "[install]" >> ~/.pip/pip.conf
+RUN echo "trusted-host=mirrors.aliyun.com" >> ~/.pip/pip.conf
+RUN fun-install pip install uvicorn
+RUN fun-install pip install fastapi
+RUN fun-install pip install pydantic
+RUN fun-install pip install requests
+RUN fun-install pip install bs4
