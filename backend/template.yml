@@ -17,13 +17,13 @@ Resources:
           Properties:
             AuthType: ANONYMOUS
             Methods: ['POST', 'GET']
-    my_domain:
-      Type: 'Aliyun::Serverless::CustomDomain'
-      Properties:
-        DomainName: Auto
-        Protocol: HTTP
-        RouteConfig:
-          Routes:
-            '/*':
-              ServiceName: backend
-              FunctionName: backend
+  my_domain:
+    Type: 'Aliyun::Serverless::CustomDomain'
+    Properties:
+      DomainName: Auto
+      Protocol: HTTP
+      RouteConfig:
+        Routes:
+          '/*':
+            ServiceName: backend
+            FunctionName: backend
