@@ -18,122 +18,125 @@
             class="mt-6"
             justify="start"
         >
-            <template v-if="error">
-              <v-col
-                  cols="12"
-                  md="6"
-                  lg="4"
-                  align-self="center"
+          <template v-if="error">
+            <v-col
+                cols="12"
+                md="6"
+                lg="3"
+                class="mx-auto"
+                align-self="center"
+            >
+              <v-card
+                  height="20vh"
+                  class="d-flex align-center"
               >
-                <v-card
-                    height="20vh"
-                    class="d-flex align-center"
-                >
-                  <v-row justify="center" align="center" class="pa-4 flex-column">
-                    <v-card-title class="headline">{{ errorMsg }}</v-card-title>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </template>
-            <template v-else-if="!haveSession">
-              <v-col
-                  cols="12"
-                  md="6"
-                  lg="3"
-                  class="mx-auto"
-                  align-self="center"
+                <span
+                    class="headline text-center"
+                    style="width: 100%"
+                >{{ errorMsg }}
+                </span>
+              </v-card>
+            </v-col>
+          </template>
+          <template v-else-if="!haveSession">
+            <v-col
+                cols="12"
+                md="6"
+                lg="3"
+                class="mx-auto"
+                align-self="center"
+            >
+              <v-card
+                  height="50vh"
+                  class="d-flex align-center"
               >
-                <v-card
-                    height="50vh"
-                    class="d-flex align-center"
-                >
-                  <v-row justify="center" align="center" class="pa-4 flex-column">
-                    <v-img
-                        :src="qrcodeURL"
-                        max-width="50%"
-                        class="pa-8 rounded"
-                    >
-                    </v-img>
-                    <v-card-subtitle
-                        class="heading qrcode-title"
-                    >
-                      请使用学习通扫描二维码
-                    </v-card-subtitle>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </template>
-            <template v-else-if="!haveData">
-                <v-col
-                    cols="12"
-                    md="6"
-                    lg="4"
-                    v-for="(i) in 3"
-                    :key="i"
-                >
-                  <v-skeleton-loader
-                      type="card"
-                  ></v-skeleton-loader>
-                </v-col>
-            </template>
-            <template v-else>
-              <v-col
-                  cols="12"
-                  md="6"
-                  lg="4"
-                  class="pb-4"
-                  v-for="(oneWorkData,i) in workData"
-                  :key="i"
-              >
-                <v-card>
+                <v-row justify="center" align="center" class="pa-4 flex-column">
                   <v-img
-                      :src="'https://picsum.photos/seed/'+(oneWorkData['workName'])+'/600/200'"
-                      :lazy-src="require('@/assets/600x200.png')"
-                      contain
-                  />
-                  <v-card-title
-                      class="headline"
+                      :src="qrcodeURL"
+                      max-width="50%"
+                      class="pa-8 rounded"
                   >
-                    {{oneWorkData['workName']}}
-                  </v-card-title>
-
+                  </v-img>
                   <v-card-subtitle
-                      class="heading pt-2"
+                      class="heading qrcode-title"
                   >
+                    请使用学习通扫描二维码
+                  </v-card-subtitle>
+                </v-row>
+              </v-card>
+            </v-col>
+          </template>
+          <template v-else-if="!haveData">
+            <v-col
+                cols="12"
+                md="6"
+                lg="4"
+                v-for="(i) in 3"
+                :key="i"
+            >
+              <v-skeleton-loader
+                  type="card"
+              ></v-skeleton-loader>
+            </v-col>
+          </template>
+          <template v-else>
+            <v-col
+                cols="12"
+                md="6"
+                lg="4"
+                class="pb-4"
+                v-for="(oneWorkData,i) in workData"
+                :key="i"
+            >
+              <v-card>
+                <v-img
+                    :src="'https://picsum.photos/seed/'+(oneWorkData['workName'])+'/600/200'"
+                    :lazy-src="require('@/assets/600x200.png')"
+                    contain
+                />
+                <v-card-title
+                    class="headline"
+                >
+                  {{ oneWorkData['workName'] }}
+                </v-card-title>
+
+                <v-card-subtitle
+                    class="heading pt-2"
+                >
                 <span
                     class="course-name"
                 >
                   {{ oneWorkData['courseName'] }}
                 </span>
-                    <span class="by-name d-inline-block">&emsp;</span>
-                    <span
-                        class="font-weight-light grey--text teacher-name"
-                    >
-                  {{oneWorkData['teacherName']}}
+                  <span class="by-name d-inline-block">&emsp;</span>
+                  <span
+                      class="font-weight-light grey--text teacher-name"
+                  >
+                  {{ oneWorkData['teacherName'] }}
                 </span>
-                  </v-card-subtitle>
-                  <v-divider/>
-                  <v-card-actions>
-                    <v-chip
-                        class="ml-2"
-                    >
-                      <v-icon>mdi-alarm</v-icon>&nbsp;
-                      {{oneWorkData['workTime']}}
-                    </v-chip>
-                    <v-spacer/>
-                    <v-btn
-                        text
-                        color="orange lighten-2"
-                        style="font-size: 1rem"
-                        class="mr-2"
-                        @click="goWork(oneWorkData['workURL'])"
-                    >
-                      DO IT!
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </template>
+                </v-card-subtitle>
+                <v-divider/>
+                <v-card-actions>
+                  <v-chip
+                      class="ml-2"
+                  >
+                    <v-icon>mdi-alarm</v-icon>&nbsp;
+                    {{ oneWorkData['workTime'] }}
+                  </v-chip>
+                  <v-spacer/>
+                  <v-btn
+                      text
+                      color="orange lighten-2"
+                      style="font-size: 1rem"
+                      class="mr-2"
+                      @click="goWork(oneWorkData['workURL'])"
+                  >
+                    DO IT!
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </template>
         </v-row>
       </v-container>
     </v-main>
@@ -184,7 +187,7 @@ export default {
       enc: '',
       uuid: '',
       session: {},
-      tryTime:0,
+      tryTime: 0,
     }
   },
   mounted() {
@@ -195,7 +198,7 @@ export default {
       return new Promise((resolve) => setTimeout(resolve, time))
     },
     goWork: function (url) {
-      window.open(url,'_blank')
+      window.open(url, '_blank')
     }
     ,
     showSnackbar: function (arg) {
@@ -207,13 +210,13 @@ export default {
       return {'session': JSON.parse(ls.getItem('session'))}
     },
     checkSession: function () {
-      let that=this
-      if (ls.getItem('jia')===null) {
+      let that = this
+      if (ls.getItem('jia') === null) {
         that.getLoginData()
       } else {
         let url = this.$apiurl + '/login/verifyCookies'
         axios.post(url, this.getSession()).then(function (resp) {
-          if(resp.data){
+          if (resp.data) {
             that.haveSession = true
             that.getWorkData()
           } else {
@@ -232,20 +235,20 @@ export default {
           'session': this.session
         }
       }).then(function (resp) {
-        if(!resp.data['status']){
-          that.sleep(2000).then(()=>{
+        if (!resp.data['status']) {
+          that.sleep(2000).then(() => {
             that.tryTime++
-            if(that.tryTime>40){
+            if (that.tryTime > 40) {
               that.getLoginData()
             } else {
-              that.sleep(2000).then(()=>{
+              that.sleep(2000).then(() => {
                 that.checkAuth()
               })
             }
           })
         } else {
           ls.setItem('session', JSON.stringify(resp.data['session']))
-          ls.setItem('jia','1')
+          ls.setItem('jia', '1')
           that.showSnackbar(['登陆成功', 'success'])
           that.haveSession = true
           that.getWorkData()
@@ -266,7 +269,7 @@ export default {
       let that = this
       let url = this.$apiurl + '/checkXXTConnect'
       axios.get(url).then(function (resp) {
-        if(!resp.data){
+        if (!resp.data) {
           that.error = true
           that.errorMsg = '后端服务器无法连接学习通，请联系管理员'
         } else {
