@@ -88,7 +88,9 @@
                 v-for="(oneWorkData,i) in workData"
                 :key="i"
             >
-              <v-card>
+              <v-card
+                  class="mx-12"
+              >
                 <v-img
                     :src="'https://picsum.photos/seed/'+(oneWorkData['workName'])+'/600/200'"
                     :lazy-src="require('@/assets/600x200.png')"
