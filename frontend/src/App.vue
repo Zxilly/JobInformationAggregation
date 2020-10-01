@@ -76,10 +76,31 @@
             >
               <v-skeleton-loader
                   type="card"
+                  class="mx-12"
               ></v-skeleton-loader>
             </v-col>
           </template>
           <template v-else>
+            <template v-if="workData===[]">
+              <v-col
+                  cols="12"
+                  md="6"
+                  lg="3"
+                  class="mx-auto"
+                  align-self="center"
+              >
+                <v-card
+                    height="20vh"
+                    class="d-flex align-center"
+                >
+                <span
+                    class="headline text-center"
+                    style="width: 100%"
+                >没有活动的作业
+                </span>
+                </v-card>
+              </v-col>
+            </template>
             <v-col
                 cols="12"
                 md="6"
