@@ -81,8 +81,8 @@
             </v-col>
           </template>
           <template v-else>
-            <template v-if="workData===[]">
               <v-col
+                  v-if="noWork"
                   cols="12"
                   md="6"
                   lg="3"
@@ -100,7 +100,6 @@
                 </span>
                 </v-card>
               </v-col>
-            </template>
             <v-col
                 cols="12"
                 md="6"
@@ -211,6 +210,7 @@ export default {
       uuid: '',
       session: {},
       tryTime: 0,
+      noWork:false
     }
   },
   mounted() {
@@ -307,6 +307,10 @@ export default {
         that.workData = resp.data['workInfo']
         that.haveData = true
         that.showSnackbar(['查询成功', 'success'])
+        //console.log(that.workData)
+        if(!that.workData.length){
+          that.noWork=true
+        }
       })
     },
     getLoginData: function () {
