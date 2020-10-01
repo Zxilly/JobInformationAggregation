@@ -9,3 +9,4 @@ RUN fun-install pip install fastapi
 RUN fun-install pip install pydantic
 RUN fun-install pip install requests
 RUN fun-install pip install bs4
+RUN fun-install pip install lxml
