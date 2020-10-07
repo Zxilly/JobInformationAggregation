@@ -32,6 +32,7 @@ def getLoginSession():
     enc = htmlTag.find(id='enc')['value']
     uuid = htmlTag.find(id='uuid')['value']
     # print(enc, uuid)
+    htmlTag.decompose()
     return session, enc, uuid
 
 
@@ -95,6 +96,7 @@ def getWorkInfo(session: dict):
 
         courseWorkURL = str(courseHTMLBS.find('li', dataname="zy-stu").a['data-url']) + '&status=1'
 
+        courseHTMLBS.decompose()
         # print(courseWorkURL)
 
         courseWorkHTML = s.get(courseWorkURL).content.decode()
@@ -115,6 +117,7 @@ def getWorkInfo(session: dict):
             }
             # print(singleWorkInfo)
             allWorkInfo.append(singleWorkInfo.copy())
-
+        courseWorkHTMLBS.decompose()
+    htmlBS.decompose()
     s.close()
     return allWorkInfo
