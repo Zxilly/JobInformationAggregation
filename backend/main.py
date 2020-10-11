@@ -63,3 +63,5 @@ async def info(
 ):
     return {'workInfo': getWorkInfo(session)}
 
+if __name__ == '__main__':
+    uvicorn.run('main:app',port=4005,debug=True)

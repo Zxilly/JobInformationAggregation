@@ -1,8 +1,11 @@
 import base64
 import pickle
+import threading
 
 import requests
 from bs4 import BeautifulSoup
+
+from clazz import *
 
 loginURL = 'https://passport2.chaoxing.com/login?fid=&newversion=true&refer=http%3A%2F%2Fi.chaoxing.com'
 ua = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -75,6 +78,7 @@ def verify(session: dict):
 
 def getWorkInfo(session: dict):
     allWorkInfo = []
+    threads = []
 
     s = requests.session()
     s.cookies.update(session)
@@ -86,38 +90,48 @@ def getWorkInfo(session: dict):
     htmlBS = BeautifulSoup(html, 'lxml')
     # print(htmlBS.find_all(class_='course-info'))
     for singleCourse in htmlBS.find_all(class_='course-info'):
-        courseURL = 'https://mooc2-ans.chaoxing.com' + str(singleCourse.find('a')['href'])
-        courseName = str(singleCourse.find('span').string)
-        teacherName = str(singleCourse.find('p').string)
-        # print(courseURL,courseName,teacherName)
-
-        courseHTML = s.get(url=courseURL).content.decode()
-        courseHTMLBS = BeautifulSoup(courseHTML, 'lxml')
-
-        courseWorkURL = str(courseHTMLBS.find('li', dataname="zy-stu").a['data-url']) + '&status=1'
-
-        courseHTMLBS.decompose()
-        # print(courseWorkURL)
-
-        courseWorkHTML = s.get(courseWorkURL).content.decode()
-        courseWorkHTMLBS = BeautifulSoup(courseWorkHTML, 'lxml')
-
-        for oneWork in courseWorkHTMLBS.find_all('li'):
-            if oneWork.find('div', class_='icon-zy-g'):
-                continue
-            workName = oneWork.find(class_='fl').string
-            workURL = oneWork['data']
-            workTime = str(oneWork.find(class_='time').contents[-1]).replace('\r\n', '').strip()
-            singleWorkInfo = {
-                'courseName': courseName,
-                'teacherName': teacherName,
-                'workName': workName,
-                'workTime': workTime,
-                'workURL': workURL
-            }
-            # print(singleWorkInfo)
-            allWorkInfo.append(singleWorkInfo.copy())
-        courseWorkHTMLBS.decompose()
+        threads.append(workThread(singleCourse,s,allWorkInfo))
     htmlBS.decompose()
-    s.close()
+
+    for t in threads:
+        t.start()
+
+    for t in threads:
+        t.join()
+
     return allWorkInfo
+
+def parseOneCourse(singleCourse,s,allWorkInfo):
+    courseURL = 'https://mooc2-ans.chaoxing.com' + str(singleCourse.find('a')['href'])
+    courseName = str(singleCourse.find('span').string)
+    teacherName = str(singleCourse.find('p').string)
+    # print(courseURL,courseName,teacherName)
+
+    courseHTML = s.get(url=courseURL).content.decode()
+    courseHTMLBS = BeautifulSoup(courseHTML, 'lxml')
+
+    courseWorkURL = str(courseHTMLBS.find('li', dataname="zy-stu").a['data-url']) + '&status=1'
+
+    courseHTMLBS.decompose()
+    # print(courseWorkURL)
+
+    courseWorkHTML = s.get(courseWorkURL).content.decode()
+    courseWorkHTMLBS = BeautifulSoup(courseWorkHTML, 'lxml')
+
+    for oneWork in courseWorkHTMLBS.find_all('li'):
+        if oneWork.find('div', class_='icon-zy-g'):
+            continue
+        workName = oneWork.find(class_='fl').string
+        workURL = oneWork['data']
+        workTime = str(oneWork.find(class_='time').contents[-1]).replace('\r\n', '').strip()
+        singleWorkInfo = {
+            'courseName': courseName,
+            'teacherName': teacherName,
+            'workName': workName,
+            'workTime': workTime,
+            'workURL': workURL
+        }
+        # print(singleWorkInfo)
+        allWorkInfo.append(singleWorkInfo.copy())
+    courseWorkHTMLBS.decompose()
+
