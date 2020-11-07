@@ -27,11 +27,11 @@
                 align-self="center"
             >
               <v-card
-                  height="20vh"
+                  height="40vh"
                   class="d-flex align-center"
               >
                 <span
-                    class="headline text-center"
+                    class="text-center"
                     style="width: 100%"
                 >{{ errorMsg }}
                 </span>
@@ -47,21 +47,23 @@
                 align-self="center"
             >
               <v-card
-                  height="50vh"
-                  class="d-flex align-center"
+                  height="40vh"
+                  width="100%"
               >
-                <v-row justify="center" align="center" class="pa-4 flex-column">
+                <v-row
+                    style="height:100%"
+                    class="mx-auto my-auto">
                   <v-img
                       :src="qrcodeURL"
                       max-width="50%"
-                      class="pa-8 rounded"
+                      class="rounded mx-auto pt-2"
+                      contain
                   >
                   </v-img>
                   <v-card-subtitle
-                      class="heading qrcode-title"
-                  >
-                    请使用学习通扫描二维码
-                  </v-card-subtitle>
+                      class="heading qrcode-title my-auto text-center"
+                      style="width: 100%"
+                  >请使用学习通扫描二维码</v-card-subtitle>
                 </v-row>
               </v-card>
             </v-col>
@@ -281,7 +283,7 @@ export default {
     checkRunning: function () {
       let that = this
       let url = this.$apiurl + '/checkRunning'
-      axios.get(url, {timeout: 2000}).then(function () {
+      axios.get(url, {timeout: 10000}).then(function () {
         that.checkServerXXTConnect()
       }).catch(function () {
         that.error = true

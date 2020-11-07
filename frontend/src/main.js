@@ -8,7 +8,8 @@ Vue.config.devtools = isDebug_mode
 Vue.config.productionTip = isDebug_mode
 
 if(isDebug_mode){
-    Vue.prototype.$apiurl = 'http://127.0.0.1:8000'
+    //Vue.prototype.$apiurl = 'http://127.0.0.1:8000'
+    Vue.prototype.$apiurl = 'https://ajax.work.learningman.top'
 } else {
     Vue.prototype.$apiurl = 'https://ajax.work.learningman.top'
 }
