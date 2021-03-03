@@ -134,7 +134,7 @@ async def parseOneCourse(singleCourse, s, allWorkInfo, lock):
     courseWorkHTMLBS = BeautifulSoup(courseWorkHTML.content.decode(), 'lxml')
 
     for oneWork in courseWorkHTMLBS.find_all('li'):
-        if oneWork.find('div', class_='icon-zy-g'):
+        if oneWork.find('div', class_='icon-zy-g') or oneWork.find('div', class_='icon-hp-gy'):
             continue
 
         # print(courseURL, courseName, teacherName)
