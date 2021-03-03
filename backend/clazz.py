@@ -22,10 +22,12 @@ class workThread(threading.Thread):
         self.allWorkInfo = allWorkInfo
 
     def run(self):
-        courseURL = 'https://mooc2-ans.chaoxing.com' + str(self.singleCourse.find('a')['href'])
+        courseURL = str(self.singleCourse.find('a')['href'])
         courseName = str(self.singleCourse.find('span').string)
         teacherName = str(self.singleCourse.find('p').string)
-        # print(courseURL,courseName,teacherName)
+        print(courseURL,courseName,teacherName)
+
+        return
 
         courseHTML = self.s.get(url=courseURL).content.decode()
         courseHTMLBS = BeautifulSoup(courseHTML, 'lxml')

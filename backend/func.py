@@ -1,11 +1,12 @@
+import asyncio
 import base64
 import pickle
-import threading
+from functools import partial
 
 import requests
 from bs4 import BeautifulSoup
 
-from clazz import *
+# from clazz import *
 
 loginURL = 'https://passport2.chaoxing.com/login?fid=&newversion=true&refer=http%3A%2F%2Fi.chaoxing.com'
 ua = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -23,7 +24,7 @@ def load(filename):
 
 
 def checkXXTConnect():
-    req = requests.get(loginURL,headers=ua)
+    req = requests.get(loginURL, headers=ua)
     return req.ok
 
 
@@ -76,54 +77,78 @@ def verify(session: dict):
     return redirect
 
 
-def getWorkInfo(session: dict):
+def create_task(coro):
+    loop = asyncio.get_running_loop()
+    return loop.create_task(coro)
+
+
+async def getWorkInfo(session: dict):
     allWorkInfo = []
-    threads = []
+    tasks = []
 
     s = requests.session()
     s.cookies.update(session)
     s.headers.update(ua)
 
+    lock = asyncio.Lock()
+
     courseListURL = 'https://mooc2-ans.chaoxing.com/visit/courses/list?rss=1&start=0&size=500&catalogId=0&searchname='
 
     html = s.get(url=courseListURL).content.decode()
     htmlBS = BeautifulSoup(html, 'lxml')
-    # print(htmlBS.find_all(class_='course-info'))
-    for singleCourse in htmlBS.find_all(class_='course-info'):
-        threads.append(workThread(singleCourse,s,allWorkInfo))
+    for singleCourse in htmlBS.find_all(class_='course-info'):  # 虽然连接是旧版本的，但是解析课程名称和教师名称更方便
+        tasks.append(parseOneCourse(singleCourse, s, allWorkInfo, lock))
     htmlBS.decompose()
 
-    for t in threads:
-        t.start()
+    print(tasks)
 
-    for t in threads:
-        t.join()
+    await asyncio.wait(tasks)
+
+    print("After every Task")
+    print(allWorkInfo)
 
     return allWorkInfo
 
-def parseOneCourse(singleCourse,s,allWorkInfo):
-    courseURL = 'https://mooc2-ans.chaoxing.com' + str(singleCourse.find('a')['href'])
+
+async def parseOneCourse(singleCourse, s, allWorkInfo, lock):
+    courseURL = str(singleCourse.find('a')['href']) + "&ismooc2=1"
     courseName = str(singleCourse.find('span').string)
     teacherName = str(singleCourse.find('p').string)
-    # print(courseURL,courseName,teacherName)
 
-    courseHTML = s.get(url=courseURL).content.decode()
-    courseHTMLBS = BeautifulSoup(courseHTML, 'lxml')
+    # courseHTML = s.get(url=courseURL).content.decode()
+
+    future = asyncio.get_event_loop().run_in_executor(None, partial(s.get, url=courseURL))
+
+    courseHTML = await future
+
+    courseHTMLBS = BeautifulSoup(courseHTML.content.decode(), 'lxml')
 
     courseWorkURL = str(courseHTMLBS.find('li', dataname="zy-stu").a['data-url']) + '&status=1'
 
     courseHTMLBS.decompose()
-    # print(courseWorkURL)
 
-    courseWorkHTML = s.get(courseWorkURL).content.decode()
-    courseWorkHTMLBS = BeautifulSoup(courseWorkHTML, 'lxml')
+    future = asyncio.get_event_loop().run_in_executor(None, partial(s.get, url=courseWorkURL))
+
+    courseWorkHTML = await future
+
+    courseWorkHTMLBS = BeautifulSoup(courseWorkHTML.content.decode(), 'lxml')
 
     for oneWork in courseWorkHTMLBS.find_all('li'):
         if oneWork.find('div', class_='icon-zy-g'):
             continue
-        workName = oneWork.find(class_='fl').string
-        workURL = oneWork['data']
-        workTime = str(oneWork.find(class_='time').contents[-1]).replace('\r\n', '').strip()
+
+        # print(courseURL, courseName, teacherName)
+        # print(oneWork.prettify())
+
+        workName = str(oneWork.find(class_='fl').string)
+        workURL = str(oneWork['data'])
+
+        timeObj = oneWork.find(class_='time')
+        if timeObj:
+            workTime = str(timeObj.contents[-1]).replace('\r\n', '').strip()
+        else:
+            workTime = ""
+
         singleWorkInfo = {
             'courseName': courseName,
             'teacherName': teacherName,
@@ -131,7 +156,11 @@ def parseOneCourse(singleCourse,s,allWorkInfo):
             'workTime': workTime,
             'workURL': workURL
         }
-        # print(singleWorkInfo)
-        allWorkInfo.append(singleWorkInfo.copy())
+        oneWork.decompose()
+
+        async with lock:
+            allWorkInfo.append(singleWorkInfo.copy())
+
     courseWorkHTMLBS.decompose()
 
+    print("Finish one Task")

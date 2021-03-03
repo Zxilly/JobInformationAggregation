@@ -61,7 +61,7 @@ async def verifyCookies(
 async def info(
         session: dict = Body(..., embed=True)
 ):
-    return {'workInfo': getWorkInfo(session)}
+    return {'workInfo': await getWorkInfo(session)}
 
 if __name__ == '__main__':
     uvicorn.run('main:app',port=4005,debug=True)

@@ -143,6 +143,7 @@
                 <v-card-actions>
                   <v-chip
                       class="ml-2"
+                      v-if="oneWorkData['workTime']"
                   >
                     <v-icon>mdi-alarm</v-icon>&nbsp;
                     {{ oneWorkData['workTime'] }}
