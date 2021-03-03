@@ -115,8 +115,6 @@ async def parseOneCourse(singleCourse, s, allWorkInfo, lock):
     courseName = str(singleCourse.find('span').string)
     teacherName = str(singleCourse.find('p').string)
 
-    # courseHTML = s.get(url=courseURL).content.decode()
-
     future = asyncio.get_event_loop().run_in_executor(None, partial(s.get, url=courseURL))
 
     courseHTML = await future
@@ -136,9 +134,6 @@ async def parseOneCourse(singleCourse, s, allWorkInfo, lock):
     for oneWork in courseWorkHTMLBS.find_all('li'):
         if oneWork.find('div', class_='icon-zy-g') or oneWork.find('div', class_='icon-hp-gy'):
             continue
-
-        # print(courseURL, courseName, teacherName)
-        # print(oneWork.prettify())
 
         workName = str(oneWork.find(class_='fl').string)
         workURL = str(oneWork['data'])
